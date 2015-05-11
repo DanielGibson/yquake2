@@ -1114,7 +1114,7 @@ R_FindImage(char *name, imagetype_t type)
 
 	/* Remove the extension */
 	memset(namewe, 0, 256);
-	memcpy(namewe, name, len - 4);
+	memcpy(namewe, name, ext-name-1); // -1 because ext is after the .
 
 	if (len < 5)
 	{
@@ -1232,6 +1232,30 @@ R_FindImage(char *name, imagetype_t type)
 			}
 		}
 	}
+	else if(strcmp(ext, "m8") == 0)
+	{
+		// TODO: retexturing support? (I guess there are currently no retexturing sets for H2)
+		LoadM8(name, &pic, &width, &height);
+
+		if (!pic)
+		{
+			return NULL;
+		}
+
+		image = R_LoadPic(name, pic, width, 0, height, 0, type, 32);
+	}
+	else if(strcmp(ext, "m32") == 0)
+	{
+		// TODO: retexturing support? (I guess there are currently no retexturing sets for H2)
+		LoadM32(name, &pic, &width, &height);
+
+		if (!pic)
+		{
+			return NULL;
+		}
+
+		image = R_LoadPic(name, pic, width, 0, height, 0, type, 32);
+	}
 	else if (strcmp(ext, "tga") == 0 || strcmp(ext, "png") == 0 || strcmp(ext, "jpg") == 0)
 	{
 		char tmp_name[256];
@@ -1256,6 +1280,9 @@ R_FindImage(char *name, imagetype_t type)
 		 */
 
 		LoadSTB(name, ext, &pic, &width, &height);
+
+		if(pic == NULL) return NULL;
+
 		image = R_LoadPic(name, pic, width, realwidth,
 				height, realheight, type, 32);
 	}

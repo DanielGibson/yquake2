@@ -705,6 +705,10 @@ R_SetSky(char *name, float rotate, vec3_t axis)
 
 	for (i = 0; i < 6; i++)
 	{
+#if USE_H2_MODE
+		Com_sprintf(pathname, sizeof(pathname), "pics/skies/%s%s.m8",
+					skyname, suf[i]);
+#else // Quake2
 		if (qglColorTableEXT && gl_ext_palettedtexture->value)
 		{
 			Com_sprintf(pathname, sizeof(pathname), "env/%s%s.pcx",
@@ -715,6 +719,7 @@ R_SetSky(char *name, float rotate, vec3_t axis)
 			Com_sprintf(pathname, sizeof(pathname), "env/%s%s.tga",
 					skyname, suf[i]);
 		}
+#endif
 
 		sky_images[i] = R_FindImage(pathname, it_sky);
 

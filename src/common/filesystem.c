@@ -32,7 +32,7 @@
  #include "unzip/unzip.h"
 #endif
 
-#define MAX_HANDLES 512
+#define MAX_HANDLES 1024 //512
 #define MAX_READ 0x10000
 #define MAX_WRITE 0x10000
 #define MAX_FIND_FILES 0x04000

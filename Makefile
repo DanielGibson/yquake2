@@ -85,6 +85,10 @@ OSX_APP:=yes
 # case of presence.
 CONFIG_FILE := config.mk
 
+# create a binary compatible with Heretic2 game data (and possibly dlls)
+# will not work with Q2 data/dlls!
+HERETIC2_MODE:=no
+
 # ----------
 
 # In case a of a configuration file being present, we'll just use it
@@ -171,6 +175,13 @@ CFLAGS += -DSYSTEMWIDE
 ifneq ($(WITH_SYSTEMDIR),"")
 CFLAGS += -DSYSTEMDIR=\"$(WITH_SYSTEMDIR)\"
 endif
+endif
+
+# ----------
+
+# heretic2 compatibility
+ifeq ($(HERETIC2_MODE),yes)
+CFLAGS += -DUSE_H2_MODE
 endif
 
 # ----------
@@ -306,6 +317,7 @@ config:
 	@echo "WITH_ZIP = $(WITH_ZIP)"
 	@echo "WITH_SYSTEMWIDE = $(WITH_SYSTEMWIDE)"
 	@echo "WITH_SYSTEMDIR = $(WITH_SYSTEMDIR)"
+	@echo "HERETIC2_MODE = $(HERETIC2_MODE)"
 	@echo "============================"
 	@echo ""
 ifeq ($(WITH_SDL2),yes)
@@ -611,6 +623,7 @@ CLIENT_OBJS_ := \
 	src/client/refresh/r_surf.o \
 	src/client/refresh/r_warp.o \
 	src/client/refresh/files/md2.o \
+	src/client/refresh/files/m8_32.o \
 	src/client/refresh/files/pcx.o \
 	src/client/refresh/files/sp2.o \
 	src/client/refresh/files/stb.o \

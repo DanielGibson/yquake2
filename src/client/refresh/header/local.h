@@ -323,6 +323,10 @@ void LoadPCX(char *filename, byte **pic, byte **palette,
 		int *width, int *height);
 image_t *LoadWal(char *name);
 qboolean LoadSTB(const char *origname, const char* type, byte **pic, int *width, int *height);
+
+qboolean LoadM8(const char *origname, byte **pic, int *outWidth, int *outHeight);
+qboolean LoadM32(const char *origname, byte **pic, int *outWidth, int *outHeight);
+
 void GetWalInfo(char *name, int *width, int *height);
 void GetPCXInfo(char *filename, int *width, int *height);
 image_t *R_LoadPic(char *name, byte *pic, int width, int realwidth,

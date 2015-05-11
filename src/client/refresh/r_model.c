@@ -472,7 +472,11 @@ Mod_LoadTexinfo(lump_t *l)
 			out->next = NULL;
 		}
 
+#if USE_H2_MODE
+		Com_sprintf(name, sizeof(name), "textures/%s.m8", in->texture);
+#else // Quake2
 		Com_sprintf(name, sizeof(name), "textures/%s.wal", in->texture);
+#endif
 
 		out->image = R_FindImage(name, it_wall);
 
