@@ -847,7 +847,7 @@ GL3_DrawParticles(void)
 		} part_vtx;
 		assert(sizeof(part_vtx)==9*sizeof(float)); // remember to update GL3_SurfInit() if this changes!
 
-		part_vtx buf[numParticles];
+		YQ2_VLA(part_vtx, buf, numParticles);
 
 		// TODO: viewOrg could be in UBO
 		vec3_t viewOrg;
@@ -884,6 +884,8 @@ GL3_DrawParticles(void)
 		glDisable(GL_BLEND);
 		glDepthMask(GL_TRUE);
 		glDisable(GL_PROGRAM_POINT_SIZE);
+
+		YQ2_VLAFREE(buf);
 	}
 }
 

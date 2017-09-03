@@ -94,6 +94,12 @@ typedef unsigned char byte;
  #define Q2_DLL_EXPORTED  __attribute__((__visibility__("default")))
 #endif
 
+#ifdef _MSC_VER
+ #define PRINTF_ATTR(FMT, VARGS)
+#else // at least GCC/mingw and clang support this
+ #define PRINTF_ATTR(FMT, VARGS) __attribute__((format(printf, FMT , VARGS )));
+#endif
+
 /* per-level limits */
 #define MAX_CLIENTS 256             /* absolute limit */
 #define MAX_EDICTS 1024             /* must change protocol to increase more */
