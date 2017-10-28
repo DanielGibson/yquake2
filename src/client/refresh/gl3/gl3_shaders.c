@@ -325,6 +325,9 @@ static const char* vertexSrc3D = MULTILINE_STRING(
 
 		// it gets attributes and uniforms from vertexCommon3D
 
+		// !!! this triggers mesa bug #100316 "error: declarations for uniform `transModel' have mismatching invariant qualifiers" !!!
+		invariant gl_Position;
+
 		void main()
 		{
 			passTexCoord = texCoord;
