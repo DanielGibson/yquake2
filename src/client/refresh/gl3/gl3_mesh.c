@@ -644,7 +644,7 @@ GL3_DrawAliasModel(entity_t *entity)
 	vec3_t shadelight;
 	vec3_t shadevector;
 	gl3image_t *skin;
-	hmm_mat4 origProjMat = {0}; // use for left-handed rendering
+	hmm_mat4 origProjViewMat = {0}; // use for left-handed rendering
 	// used to restore ModelView matrix after changing it for this entities position/rotation
 	hmm_mat4 origModelMat = {0};
 
@@ -811,12 +811,12 @@ GL3_DrawAliasModel(entity_t *entity)
 	{
 		extern hmm_mat4 GL3_MYgluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar);
 
-		origProjMat = gl3state.uni3DData.transProjMat4;
+		origProjViewMat = gl3state.uni3DData.transProjViewMat4;
 
 		// render weapon with a different FOV (r_gunfov) so it's not distorted at high view FOV
 		float screenaspect = (float)gl3_newrefdef.width / gl3_newrefdef.height;
 		float dist = (r_farsee->value == 0) ? 4096.0f : 8192.0f;
-		gl3state.uni3DData.transProjMat4 = GL3_MYgluPerspective(r_gunfov->value, screenaspect, 4, dist);
+		hmm_mat4 projMat = GL3_MYgluPerspective(r_gunfov->value, screenaspect, 4, dist);
 
 		if(gl_lefthand->value == 1.0F)
 		{
@@ -824,12 +824,13 @@ GL3_DrawAliasModel(entity_t *entity)
 			// of projection matrix
 			for(int i=0; i<4; ++i)
 			{
-				gl3state.uni3DData.transProjMat4.Elements[0][i] = -gl3state.uni3DData.transProjMat4.Elements[0][i];
+				projMat.Elements[0][i] = - projMat.Elements[0][i];
 			}
 			//GL3_UpdateUBO3D(); Note: GL3_RotateForEntity() will call this,no need to do it twice before drawing
 
 			glCullFace(GL_BACK);
 		}
+		gl3state.uni3DData.transProjViewMat4 = HMM_MultiplyMat4(projMat, gl3state.viewMat3D);
 	}
 
 
@@ -902,7 +903,7 @@ GL3_DrawAliasModel(entity_t *entity)
 
 	if (entity->flags & RF_WEAPONMODEL)
 	{
-		gl3state.uni3DData.transProjMat4 = origProjMat;
+		gl3state.uni3DData.transProjViewMat4 = origProjViewMat;
 		GL3_UpdateUBO3D();
 		if(gl_lefthand->value == 1.0F)
 			glCullFace(GL_FRONT);

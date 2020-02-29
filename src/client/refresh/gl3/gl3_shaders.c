@@ -278,8 +278,7 @@ static const char* vertexCommon3D = MULTILINE_STRING(
 		// for UBO shared between all 3D shaders
 		layout (std140) uniform uni3D
 		{
-			mat4 transProj;
-			mat4 transView;
+			mat4 transProjView;
 			mat4 transModel;
 
 			float scroll; // for SURF_FLOWING
@@ -307,13 +306,11 @@ static const char* fragmentCommon3D = MULTILINE_STRING(
 			float intensity2D; // for HUD, menus etc
 
 			vec4 color; // really?
-
 		};
 		// for UBO shared between all 3D shaders
 		layout (std140) uniform uni3D
 		{
-			mat4 transProj;
-			mat4 transView;
+			mat4 transProjView;
 			mat4 transModel;
 
 			float scroll; // for SURF_FLOWING
@@ -334,7 +331,7 @@ static const char* vertexSrc3D = MULTILINE_STRING(
 		void main()
 		{
 			passTexCoord = texCoord;
-			gl_Position = transProj * transView * transModel * vec4(position, 1.0);
+			gl_Position = transProjView * transModel * vec4(position, 1.0);
 		}
 );
 
@@ -345,7 +342,7 @@ static const char* vertexSrc3Dflow = MULTILINE_STRING(
 		void main()
 		{
 			passTexCoord = texCoord + vec2(scroll, 0);
-			gl_Position = transProj * transView * transModel * vec4(position, 1.0);
+			gl_Position = transProjView * transModel * vec4(position, 1.0);
 		}
 );
 
@@ -368,7 +365,7 @@ static const char* vertexSrc3Dlm = MULTILINE_STRING(
 			passNormal = normalize(worldNormal.xyz);
 			passLightFlags = lightFlags;
 
-			gl_Position = transProj * transView * worldCoord;
+			gl_Position = transProjView * worldCoord;
 		}
 );
 
@@ -391,7 +388,7 @@ static const char* vertexSrc3DlmFlow = MULTILINE_STRING(
 			passNormal = normalize(worldNormal.xyz);
 			passLightFlags = lightFlags;
 
-			gl_Position = transProj * transView * worldCoord;
+			gl_Position = transProjView * worldCoord;
 		}
 );
 
@@ -599,7 +596,7 @@ static const char* vertexSrc3Dwater = MULTILINE_STRING(
 			tc *= 1.0/64.0; // do this last
 			passTexCoord = tc;
 
-			gl_Position = transProj * transView * transModel * vec4(position, 1.0);
+			gl_Position = transProjView * transModel * vec4(position, 1.0);
 		}
 );
 
@@ -613,7 +610,7 @@ static const char* vertexSrcAlias = MULTILINE_STRING(
 		{
 			passColor = vertColor*overbrightbits;
 			passTexCoord = texCoord;
-			gl_Position = transProj * transView * transModel * vec4(position, 1.0);
+			gl_Position = transProjView* transModel * vec4(position, 1.0);
 		}
 );
 
@@ -666,7 +663,7 @@ static const char* vertexSrcParticles = MULTILINE_STRING(
 		void main()
 		{
 			passColor = vertColor;
-			gl_Position = transProj * transView * transModel * vec4(position, 1.0);
+			gl_Position = transProjView * transModel * vec4(position, 1.0);
 
 			// abusing texCoord for pointSize, pointDist for particles
 			float pointDist = texCoord.y*0.1; // with factor 0.1 it looks good.
@@ -981,8 +978,7 @@ static void initUBOs(void)
 	glBufferData(GL_UNIFORM_BUFFER, sizeof(gl3state.uni2DData), &gl3state.uni2DData, GL_DYNAMIC_DRAW);
 
 	// the matrices will be set to something more useful later, before being used
-	gl3state.uni3DData.transProjMat4 = HMM_Mat4();
-	gl3state.uni3DData.transViewMat4 = HMM_Mat4();
+	gl3state.uni3DData.transProjViewMat4 = HMM_Mat4();
 	gl3state.uni3DData.transModelMat4 = gl3_identityMat4;
 	gl3state.uni3DData.scroll = 0.0f;
 	gl3state.uni3DData.time = 0.0f;
