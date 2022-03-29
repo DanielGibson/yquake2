@@ -211,6 +211,21 @@ R_SetDefaultState(void)
 		qglPointParameterfARB(GL_POINT_SIZE_MIN_EXT, gl1_particle_min_size->value);
 		qglPointParameterfARB(GL_POINT_SIZE_MAX_EXT, gl1_particle_max_size->value);
 		qglPointParameterfvARB(GL_DISTANCE_ATTENUATION_EXT, attenuations);
+
+		/* GL_POINT_SMOOTH is not implemented by some OpenGL
+		   drivers, especially the crappy Mesa3D backends like
+		   i915.so. That the points are squares and not circles
+		   is not a problem by Quake II! */
+		if (gl1_particle_square->value)
+		{
+			glDisable(GL_POINT_SMOOTH);
+			printf("---- glDisable(GL_POINT_SMOOTH)\n");
+		}
+		else
+		{
+			glEnable(GL_POINT_SMOOTH);
+			printf("---- glEnable(GL_POINT_SMOOTH)\n");
+		}
 	}
 
 	if (gl_config.palettedtexture)
